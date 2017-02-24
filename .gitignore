@@ -1,0 +1,220 @@
+<html>
+<head>
+
+<style>
+
+#listavehiculos{
+	border:solid 1px;
+	width:100%;
+}
+
+#listavehiculos thead{
+	background:#849CED;
+	color:#fffff5;
+}
+Table{
+background-color:#ffffff;
+border:1px;
+norder-color:#000000;
+float:left;
+}
+#sectionphoto{
+			margin-right:5px;
+			padding-left:5px;
+			padding-top:10px;
+			border-style:solid;
+			height:300px;
+			width:640px;
+			float:right;
+			border-radius:25px;
+			
+		}	
+
+}
+h1{
+margin:10px;
+color:#002ECA;
+text-align:center;
+}
+#bodyPrincipal {
+			padding-top:10px;
+			padding-left:15px;
+			margin:5px;
+			border-style:solid;
+			border-width:3px;
+			height:320px;
+			width:95%;
+			border-radius:15px;
+		}
+
+</style>
+<title>tarea 2</title>
+
+</head>
+
+<body onload="cargardatos()">
+<h1>Registro de personas</h1>
+<section id="bodyPrincipal">
+<section  id="sectionphoto">
+<video id="video" autoplay ></video>
+<canvas id="canvas" width="640" height="480"></canvas>
+</section>
+<table id=principalTabla>
+
+
+
+<tr>
+<th>Cedula</th>
+<td>
+<input type="text" id="txtmarca">
+</td>
+</tr>
+
+<tr>
+<th>Nombre</th><td>
+<input type="text" id="txtmodelo">
+</td>
+</tr>
+
+<tr>
+<th>Apellido</th>
+<td>
+<input type="text" id="txtcolor">
+</td>
+</tr>
+
+<tr>
+<th>telefono</th>
+<td>
+<input type="text" id="txtprecio">
+</td>
+</tr>
+
+<tr>
+<th colaspan="2">
+
+<button id="snap">Snap Photo</button>
+
+</th>
+<td>
+<input type="text" id="txtplaca">
+</td>
+</tr>
+
+<tr>
+<td colspan="2" align="center">
+<button onclick="agregarvehiculos()" type="button">Gurdar</button>
+</td>
+
+
+</table>
+</section>
+
+<table id="listavehiculos">
+<thead>
+<tr>
+<th>Placa</th>
+<th>Marca</th>
+<th>Modelo</th>
+<th>Color</th>
+<th>Precio</th>
+</tr>
+</thead>
+
+<tbody id="tbDatos">
+</tbody>
+
+</table>
+
+<script>
+ var vehiculos=[];
+function tomarfoto(){
+var video = document.getElementById('video');
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        video.src = window.URL.createObjectURL(stream);
+        video.play();
+    });
+}
+
+var canvas = document.getElementById('canvas');
+var context = canvas.getContext('2d');
+var video = document.getElementById('video');
+
+document.getElementById("snap").addEventListener("click", function() {
+	context.drawImage(video, 0, 0, 640, 480);
+});
+
+}
+function limpiarformulario(){
+campo = document.getElementsByTagName('input');
+	for (x=0; x<campo.length; x++){
+	campo[x].value = '';
+	}
+}
+
+function agregarvehiculos(){
+var vehiculo=[];
+vehiculo.push(document.getElementById('txtplaca').value);
+vehiculo.push(document.getElementById('txtmarca').value);
+vehiculo.push(document.getElementById('txtmodelo').value);
+vehiculo.push(document.getElementById('txtcolor').value);
+vehiculo.push(document.getElementById('txtprecio').value);
+
+	Bien=true;
+	for (x=0; x < vehiculo.length; x++){
+		if(vehiculo[x]==""){
+		Bien=false;
+		}
+	}
+
+	if(Bien){
+	vehiculos.push(vehiculo);
+	
+	datos=JSON.stringify(vehiculos);
+	localStorage.setItem('carros',datos);
+	
+	limpiarformulario();
+	mostrarDatos();
+	}
+	
+	else{
+		alert("debe llenar todos los campo");
+	}
+	
+}
+
+function mostrarDatos(){
+destino = document.getElementById('tbDatos');
+destino.innerHTML='';
+
+	for(x=0; x < vehiculos.length; x++){
+	tr=document.createElement('tr');
+	vehiculo=vehiculos[x];
+	
+		for(y=0; y < vehiculo.length; y++){
+		dato=vehiculo[y];
+		td=document.createElement('td');
+		td.innerHTML=dato;
+		tr.appendChild(td);
+
+		}
+		
+		destino.appendChild(tr);
+	}
+}
+function cargardatos(){
+datos = localStorage.getItem('carros');
+if(datos != null){
+	vehiculos=JSON.parse(datos);
+	mostrarDatos();
+}
+}
+
+
+</script>
+
+
+</body>
+
+</html>
